@@ -15,6 +15,7 @@ import RefreshCcw01 from '@/app/components/base/icons/line/refresh-ccw-01'
 import CodeEditor from '@/app/components/result/workflow/code-editor'
 import WorkflowProcessItem from '@/app/components/result/workflow/workflow-process'
 import { CodeLanguage } from '@/types/app'
+import { fixMalformedTable } from '@/utils'
 
 export type IGenerationItemProps = {
   isWorkflow?: boolean
@@ -110,7 +111,7 @@ const GenerationItem: FC<IGenerationItemProps> = ({
                   <div className='text-gray-400 text-sm'>{t('app.generation.batchFailed.outputPlaceholder')}</div>
                 )}
                 {!isError && (typeof content === 'string') && (
-                  <Markdown content={content} />
+                  <Markdown content={fixMalformedTable(content)} />
                 )}
                 {!isError && (typeof content !== 'string') && (
                   <CodeEditor

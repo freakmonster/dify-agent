@@ -32,6 +32,7 @@ import {
 } from '@/service'
 import { v4 as uuidv4 } from 'uuid'
 import { stripMarkdown, toDifyMessageId } from './utils'
+import { fixMalformedTable } from '@/utils'
 import type { ChatMessage, AttachedFile, MessageAttachment, MessageRating } from '@/types/app'
 import { MessageRole, TransferMethod } from '@/types/app'
 import type { AppTypeValue } from '@/config'
@@ -760,7 +761,7 @@ const ChatGeneration: React.FC<Props> = ({
                 {msg.role === MessageRole.Assistant
                   ? (
                     <ReactMarkdown className="prose prose-sm max-w-none break-words">
-                      {msg.content || (msg.isStreaming ? ' ' : '')}
+                      {msg.content ? fixMalformedTable(msg.content) : (msg.isStreaming ? ' ' : '')}
                     </ReactMarkdown>
                   )
                   : (

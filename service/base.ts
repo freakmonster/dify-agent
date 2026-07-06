@@ -1,5 +1,6 @@
-import { API_PREFIX } from '@/config'
 import Toast from '@/app/components/base/toast'
+import { API_PREFIX } from '@/config'
+import { stripThinkTags } from '@/utils'
 
 const TIME_OUT = 5 * 60 * 1000 // five minutes
 
@@ -181,7 +182,7 @@ const handleStream = (
             onTaskId?.(bufferObj.task_id)
           }
           if (bufferObj.event === 'message') {
-            onData(unicodeToChar(bufferObj.answer), isFirstMessage, {
+            onData(stripThinkTags(unicodeToChar(bufferObj.answer)), isFirstMessage, {
               conversationId: bufferObj.conversation_id,
               messageId: bufferObj.id,
             })
@@ -190,7 +191,7 @@ const handleStream = (
           else if (bufferObj.event === 'agent_message') {
             // Agent streaming reply — same shape as 'message'
             const handler = onAgentMessage || onData
-            handler(unicodeToChar(bufferObj.answer), isFirstMessage, {
+            handler(stripThinkTags(unicodeToChar(bufferObj.answer)), isFirstMessage, {
               conversationId: bufferObj.conversation_id,
               messageId: bufferObj.id,
             })
