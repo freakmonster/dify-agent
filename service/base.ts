@@ -1,6 +1,7 @@
 import Toast from '@/app/components/base/toast'
 import { API_PREFIX } from '@/config'
 
+
 const TIME_OUT = 5 * 60 * 1000 // five minutes
 
 const ContentType = {
