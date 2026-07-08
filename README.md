@@ -1,6 +1,6 @@
 # dify-agent
 
-基于 [Dify](https://dify.ai) Chat API 构建的智能对话 Web 客户端，提供清爽的 Glassmorphism 毛玻璃界面。
+基于  [Dify](https://dify.ai) Chat API 构建的智能对话 Web 客户端，提供清爽的 Glassmorphism 毛玻璃界面。
 
 ## 功能特性
 
