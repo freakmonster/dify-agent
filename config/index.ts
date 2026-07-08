@@ -19,4 +19,5 @@ export const APP_INFO: AppInfo = {
   copyright: '',
   privacy_policy: '',
   default_language: 'en',
+
 }

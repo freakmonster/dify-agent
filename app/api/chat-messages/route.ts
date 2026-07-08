@@ -4,6 +4,7 @@ import { ChatClient } from 'dify-client'
 import { API_KEY, API_URL } from '@/config'
 import { getInfo, setSession } from '@/app/api/utils/common'
 
+
 const chatClient = new ChatClient(API_KEY, API_URL || undefined)
 
 /**
