@@ -1,6 +1,6 @@
 # dify-agent
 
-基于  [Dify](https://dify.ai) Chat API 构建的智能对话 Web 客户端，提供清爽的 Glassmorphism 毛玻璃界面。
+基于  [Dify](https://dify.ai) Chat API 构建的智能对话 Web 客户端。
 
 ## 功能特性
 
@@ -9,9 +9,6 @@
 - **流式输出** — SSE 实时渲染助手回复，打字机效果
 - **消息复制** — 对话气泡一键复制内容
 - **消息反馈** — 点赞 / 点踩，反馈同步至 Dify 后台
-- **推荐问题** — 自动展示 Dify 应用配置的建议追问问题
-- **Glassmorphism 毛玻璃设计** — 半透明背景、模糊效果、柔和渐变
-- **国际化** — 中英文切换，自动跟随 Dify 应用的 `default_language`
 
 ## 技术栈
 
@@ -22,6 +19,9 @@
 | 语言 | TypeScript 5 |
 | Markdown 渲染 | react-markdown + remark-gfm + KaTeX |
 | 国际化 | i18next + react-i18next |
+
+<img width="1913" height="941" alt="image" src="https://github.com/user-attachments/assets/754e64df-bdb4-4ef3-9b50-9482cb732120" />
+
 
 ## 快速开始
 
