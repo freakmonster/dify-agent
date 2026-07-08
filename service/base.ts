@@ -1,6 +1,5 @@
 import Toast from '@/app/components/base/toast'
 import { API_PREFIX } from '@/config'
-import { stripThinkTags } from '@/utils'
 
 const TIME_OUT = 5 * 60 * 1000 // five minutes
 
@@ -96,6 +95,17 @@ export type IOnDataMoreInfo = {
   conversationId: string | undefined
   messageId: string
   errorMessage?: string
+  files?: Array<{
+    type: string
+    transfer_method: string
+    url: string
+    remote_url?: string
+    related_id?: string
+    filename?: string
+    extension?: string
+    mime_type?: string
+    size?: number
+  }>
 }
 
 export type IOnData = (message: string, isFirstMessage: boolean, moreInfo: IOnDataMoreInfo) => void
@@ -107,7 +117,7 @@ export type IOnNodeStarted = (nodeStarted: NodeStartedResponse) => void
 export type IOnNodeFinished = (nodeFinished: NodeFinishedResponse) => void
 export type IOnTaskId = (taskId: string) => void
 // Chat / Agent specific
-export type IOnMessageEnd = (messageId: string, conversationId: string, metadata?: any) => void
+export type IOnMessageEnd = (messageId: string, conversationId: string, metadata?: any, files?: any[]) => void
 export type IOnAgentMessage = IOnData  // agent_message has the same shape as message
 export type IOnAgentThought = (thought: any) => void
 
@@ -182,18 +192,20 @@ const handleStream = (
             onTaskId?.(bufferObj.task_id)
           }
           if (bufferObj.event === 'message') {
-            onData(stripThinkTags(unicodeToChar(bufferObj.answer)), isFirstMessage, {
+            onData(unicodeToChar(bufferObj.answer), isFirstMessage, {
               conversationId: bufferObj.conversation_id,
               messageId: bufferObj.id,
+              files: bufferObj.files,
             })
             isFirstMessage = false
           }
           else if (bufferObj.event === 'agent_message') {
             // Agent streaming reply — same shape as 'message'
             const handler = onAgentMessage || onData
-            handler(stripThinkTags(unicodeToChar(bufferObj.answer)), isFirstMessage, {
+            handler(unicodeToChar(bufferObj.answer), isFirstMessage, {
               conversationId: bufferObj.conversation_id,
               messageId: bufferObj.id,
+              files: bufferObj.files,
             })
             isFirstMessage = false
           }
@@ -201,7 +213,7 @@ const handleStream = (
             onAgentThought?.(bufferObj)
           }
           else if (bufferObj.event === 'message_end') {
-            onMessageEnd?.(bufferObj.id, bufferObj.conversation_id, bufferObj.metadata)
+            onMessageEnd?.(bufferObj.id, bufferObj.conversation_id, bufferObj.metadata, bufferObj.files)
             // onCompleted is called when reader.done fires — don't call it here too
           }
           else if (bufferObj.event === 'workflow_started') {
@@ -322,38 +334,6 @@ const baseFetch = (url: string, fetchOptions: any, { needAllResponseContent }: I
         })
     }),
   ])
-}
-
-export const upload = (fetchOptions: any): Promise<any> => {
-  const urlPrefix = API_PREFIX
-  const urlWithPrefix = `${urlPrefix}/file-upload`
-  const defaultOptions = {
-    method: 'POST',
-    url: `${urlWithPrefix}`,
-    data: {},
-  }
-  const options = {
-    ...defaultOptions,
-    ...fetchOptions,
-  }
-  return new Promise((resolve, reject) => {
-    const xhr = options.xhr
-    xhr.open(options.method, options.url)
-    for (const key in options.headers)
-      xhr.setRequestHeader(key, options.headers[key])
-
-    xhr.withCredentials = true
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200)
-          resolve({ id: xhr.response })
-        else
-          reject(xhr)
-      }
-    }
-    xhr.upload.onprogress = options.onprogress
-    xhr.send(options.data)
-  })
 }
 
 export const ssePost = (

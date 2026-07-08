@@ -41,6 +41,73 @@
   --color-error-tint:     #fef2f2;   /* error background wash */
 }
 
+/* ── Glassmorphism theme ── */
+[data-theme="glass"] {
+  --color-primary:        #7c5ce7;
+  --color-primary-dark:   #6a4bd4;
+  --color-primary-tint:   rgba(124,92,231,0.08);
+
+  --color-surface:        rgba(255,255,255,0.55);
+  --color-bg:             rgba(248,246,252,0.4);
+  --color-border:         rgba(124,92,231,0.12);
+  --color-divider:        rgba(124,92,231,0.08);
+
+  --color-text:           #2d1f4e;
+  --color-text-strong:    #1a0d35;
+  --color-text-secondary: #5c4a7a;
+  --color-text-muted:     #9a8bb5;
+  --color-text-faint:     #c4b8db;
+  --color-icon-muted:     rgba(124,92,231,0.15);
+
+  --color-error:          #e0556a;
+  --color-error-dark:     #c94055;
+  --color-error-tint:     rgba(224,85,106,0.08);
+
+  --glass-blur:           14px;
+  --glass-shadow:         0 4px 24px rgba(124,92,231,0.05), 0 1px 4px rgba(124,92,231,0.06);
+}
+
+/* ── Glass background decorative orbs ── */
+[data-theme="glass"] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: linear-gradient(135deg, #f5f0ff 0%, #f0f8f8 40%, #faf5ff 70%, #f0f5f8 100%);
+}
+
+[data-theme="glass"] body::after {
+  content: '';
+  position: fixed;
+  z-index: -1;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.45;
+  top: -200px;
+  right: -150px;
+  background: radial-gradient(circle, #d4c5f9 0%, transparent 70%);
+  animation: glassOrbFloat 12s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+[data-theme="glass"] html::before {
+  content: '';
+  position: fixed;
+  z-index: -1;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.35;
+  bottom: -150px;
+  left: -100px;
+  background: radial-gradient(circle, #c5e8f0 0%, transparent 70%);
+  animation: glassOrbFloat 15s ease-in-out 2s infinite alternate;
+  pointer-events: none;
+}
+
 /* ── Dark mode ── */
 [data-theme="dark"] {
   --color-primary:        #e8956a;   /* brighter terracotta for dark bg */
@@ -276,4 +343,20 @@ a {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
+}
+
+/* ── Global animations ── */
+@keyframes glassOrbFloat {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, -20px) scale(1.05); }
+}
+
+@keyframes messageSlideIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes glassShimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }

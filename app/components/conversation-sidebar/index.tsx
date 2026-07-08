@@ -9,6 +9,8 @@ import {
   CheckIcon,
   XMarkIcon,
   ChatBubbleLeftRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from '@heroicons/react/24/outline'
 import Loading from '@/app/components/base/loading'
 import Toast from '@/app/components/base/toast'
@@ -28,6 +30,10 @@ type Props = {
   refreshSignal?: number
   /** App type, passed from parent */
   appType?: AppTypeValue
+  /** Whether sidebar is collapsed */
+  collapsed?: boolean
+  /** Toggle sidebar collapsed state */
+  onToggle?: () => void
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -36,6 +42,8 @@ const ConversationSidebar: React.FC<Props> = ({
   activeConversationId,
   onSelectConversation,
   refreshSignal,
+  collapsed = false,
+  onToggle,
 }) => {
   const { t } = useTranslation()
   const [conversations, setConversations] = useState<Conversation[]>([])
@@ -139,17 +147,29 @@ const ConversationSidebar: React.FC<Props> = ({
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className={s.sidebar}>
+    <div className={cn(s.sidebar, collapsed && s.collapsed)}>
       {/* Header */}
       <div className={s.sidebarHeader}>
         <div className={s.sidebarTitle}>{t('app.sidebar.title')}</div>
         <button
           className={s.newChatButton}
           onClick={() => onSelectConversation(null)}
+          title={t('app.sidebar.newChat') as string}
         >
           <PlusIcon className="w-3.5 h-3.5" />
-          {t('app.sidebar.newChat')}
+          <span className={s.newChatText}>{t('app.sidebar.newChat')}</span>
         </button>
+        {onToggle && (
+          <button
+            className={s.toggleBtn}
+            onClick={onToggle}
+            title={collapsed ? '展开侧边栏' : '收起侧边栏'}
+          >
+            {collapsed
+              ? <ChevronRightIcon className="w-4 h-4" />
+              : <ChevronLeftIcon className="w-4 h-4" />}
+          </button>
+        )}
       </div>
 
       {/* List */}
@@ -176,61 +196,66 @@ const ConversationSidebar: React.FC<Props> = ({
               if (renamingId === conv.id) return
               onSelectConversation(conv.id)
             }}
+            title={conv.name || t('app.sidebar.untitled') as string}
           >
-            {renamingId === conv.id
+            {collapsed && renamingId !== conv.id
               ? (
-                <>
-                  <input
-                    ref={renameInputRef}
-                    className={s.renameInput}
-                    value={renameValue}
-                    onChange={e => setRenameValue(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') commitRename(conv.id)
-                      if (e.key === 'Escape') setRenamingId(null)
-                    }}
-                    onClick={e => e.stopPropagation()}
-                  />
-                  <button
-                    className={s.actionBtn}
-                    onClick={(e) => { e.stopPropagation(); commitRename(conv.id) }}
-                    title={t('app.sidebar.saveTitle') as string}
-                  >
-                    <CheckIcon className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    className={s.actionBtn}
-                    onClick={(e) => { e.stopPropagation(); setRenamingId(null) }}
-                    title={t('app.sidebar.cancelTitle') as string}
-                  >
-                    <XMarkIcon className="w-3.5 h-3.5" />
-                  </button>
-                </>
+                <ChatBubbleLeftRightIcon className="w-4 h-4" />
                 )
-              : (
-                <>
-                  <span className={s.convName} title={conv.name}>
-                    {conv.name || t('app.sidebar.untitled')}
-                  </span>
-                  <span className={s.convTime}>{relativeTime(conv.updated_at || conv.created_at)}</span>
-                  <div className={s.actionButtons}>
+              : renamingId === conv.id
+                ? (
+                  <>
+                    <input
+                      ref={renameInputRef}
+                      className={s.renameInput}
+                      value={renameValue}
+                      onChange={e => setRenameValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') commitRename(conv.id)
+                        if (e.key === 'Escape') setRenamingId(null)
+                      }}
+                      onClick={e => e.stopPropagation()}
+                    />
                     <button
                       className={s.actionBtn}
-                      onClick={e => startRename(e, conv)}
-                      title={t('app.sidebar.renameTitle') as string}
+                      onClick={(e) => { e.stopPropagation(); commitRename(conv.id) }}
+                      title={t('app.sidebar.saveTitle') as string}
                     >
-                      <PencilIcon className="w-3 h-3" />
+                      <CheckIcon className="w-3.5 h-3.5" />
                     </button>
                     <button
-                      className={cn(s.actionBtn, s.actionBtnDanger)}
-                      onClick={e => handleDelete(e, conv.id)}
-                      title={t('app.sidebar.deleteTitle') as string}
+                      className={s.actionBtn}
+                      onClick={(e) => { e.stopPropagation(); setRenamingId(null) }}
+                      title={t('app.sidebar.cancelTitle') as string}
                     >
-                      <TrashIcon className="w-3 h-3" />
+                      <XMarkIcon className="w-3.5 h-3.5" />
                     </button>
-                  </div>
-                </>
-                )}
+                  </>
+                  )
+                : (
+                  <>
+                    <span className={s.convName}>
+                      {conv.name || t('app.sidebar.untitled')}
+                    </span>
+                    <span className={s.convTime}>{relativeTime(conv.updated_at || conv.created_at)}</span>
+                    <div className={s.actionButtons}>
+                      <button
+                        className={s.actionBtn}
+                        onClick={e => startRename(e, conv)}
+                        title={t('app.sidebar.renameTitle') as string}
+                      >
+                        <PencilIcon className="w-3 h-3" />
+                      </button>
+                      <button
+                        className={cn(s.actionBtn, s.actionBtnDanger)}
+                        onClick={e => handleDelete(e, conv.id)}
+                        title={t('app.sidebar.deleteTitle') as string}
+                      >
+                        <TrashIcon className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </>
+                  )}
           </div>
         ))}
       </div>

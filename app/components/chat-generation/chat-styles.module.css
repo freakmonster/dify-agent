@@ -65,6 +65,7 @@
   width: 100%;
   gap: 10px;
   align-items: flex-start;
+  animation: messageSlideIn 0.3s ease-out both;
 }
 .messageRowUser {
   flex-direction: row-reverse;
@@ -112,19 +113,33 @@
   width: fit-content;
   max-width: 100%;
   min-width: 44px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  line-height: 1.6;
+  padding: 14px 18px;
+  border-radius: 14px;
+  line-height: 1.65;
   font-size: 14px;
+  letter-spacing: 0.01em;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 .bubbleUser {
-  background: var(--color-primary);
+  background: linear-gradient(135deg, #7c5ce7, #9b7cf0);
   color: #fff;
-  border-radius: 12px 2px 12px 12px;
+  border-radius: 14px 4px 14px 14px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(124,92,231,0.3);
 }
-.bubbleAssistant {
+/* Glass morph assistant bubble — for glass theme */
+[data-theme="glass"] .bubbleAssistant {
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid rgba(124,92,231,0.08);
+  box-shadow: var(--glass-shadow);
+  border-radius: 4px 14px 14px 14px;
+}
+/* Default assistant bubble (non-glass themes) */
+[data-theme]:not([data-theme="glass"]) .bubbleAssistant,
+:not([data-theme]) .bubbleAssistant {
   background: var(--color-surface);
   color: var(--color-text);
   border: 1px solid var(--color-border);
@@ -133,7 +148,7 @@
 
 /* streaming cursor */
 .cursor::after {
-  content: '▋';
+  content: '\25AE';
   display: inline-block;
   animation: blink 0.8s step-end infinite;
   margin-left: 1px;
@@ -143,6 +158,23 @@
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+/* Streaming shimmer effect on glass theme */
+[data-theme="glass"] .bubbleAssistant.cursor {
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="glass"] .bubbleAssistant.cursor::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #7c5ce7, #9b7cf0, transparent);
+  background-size: 200% 100%;
+  animation: glassShimmer 2s linear infinite;
 }
 
 .messageTime {
@@ -159,11 +191,16 @@
 .agentThought {
   background: var(--color-bg);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 8px 12px;
+  border-radius: 10px;
+  padding: 10px 14px;
   margin-bottom: 8px;
   font-size: 12px;
   color: var(--color-text-secondary);
+}
+/* Glass agent thought */
+[data-theme="glass"] .agentThought {
+  background: rgba(124,92,231,0.04);
+  border: 1px solid rgba(124,92,231,0.08);
 }
 .agentThoughtLabel {
   font-size: 10px;
@@ -201,8 +238,16 @@
 .inputArea {
   border-top: 1px solid var(--color-border);
   background: var(--color-surface);
-  padding: 10px 40px 20px;
+  padding: 12px 40px 20px;
   flex-shrink: 0;
+}
+
+/* Glass input area */
+[data-theme="glass"] .inputArea {
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-top: 1px solid rgba(124,92,231,0.06);
 }
 
 /* ── Input toolbar (above the textarea) ── */
@@ -252,6 +297,20 @@
 }
 .inputWrapper:focus-within {
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(124,92,231,0.08);
+}
+/* Glass input wrapper */
+[data-theme="glass"] .inputWrapper {
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(124,92,231,0.12);
+  border-radius: 14px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+[data-theme="glass"] .inputWrapper:focus-within {
+  border-color: rgba(124,92,231,0.4);
+  box-shadow: 0 0 0 3px rgba(124,92,231,0.08);
 }
 .inputTextarea {
   flex: 1;
@@ -282,7 +341,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+[data-theme="glass"] .sendButton {
+  background: linear-gradient(135deg, #7c5ce7, #9b7cf0);
+  box-shadow: 0 2px 8px rgba(124,92,231,0.25);
+  border-radius: 10px;
+}
+[data-theme="glass"] .sendButton:hover:not(:disabled) {
+  box-shadow: 0 4px 14px rgba(124,92,231,0.35);
+  transform: translateY(-1px);
 }
 .sendButton:hover:not(:disabled) {
   background: var(--color-primary-dark);
@@ -316,84 +384,6 @@
   color: var(--color-text-faint);
   margin-top: 6px;
   text-align: right;
-}
-
-.loadingEllipsis {
-  font-size: 10px;
-}
-
-/* ── Multimodal buttons (mic, speak, attach) ── */
-
-/* Shared base for icon-only square buttons */
-.iconButton {
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  border: 1.5px solid var(--color-border);
-  background: transparent;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-}
-.iconButton:hover:not(:disabled) {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-.iconButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.micButton {
-  composes: iconButton;
-}
-.micButtonActive {
-  border-color: var(--color-error);
-  background: var(--color-error-tint);
-  color: var(--color-error);
-  animation: micPulse 1.2s ease-in-out infinite;
-}
-@keyframes micPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(224, 82, 82, 0.25); }
-  50%       { box-shadow: 0 0 0 6px rgba(224, 82, 82, 0); }
-}
-
-.attachButton {
-  composes: iconButton;
-}
-
-/* TTS speak button — appears inline below assistant bubble */
-.speakButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  border: 1px solid var(--color-border);
-  background: transparent;
-  color: var(--color-text-muted);
-  font-size: 11px;
-  font-family: 'DM Sans', sans-serif;
-  cursor: pointer;
-  transition: all 0.15s;
-  margin-top: 4px;
-}
-.speakButton:hover:not(:disabled) {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-.speakButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.speakButtonActive {
-  border-color: var(--color-primary);
-  background: var(--color-primary-tint);
-  color: var(--color-primary);
 }
 
 /* ── File preview area ── */
@@ -604,4 +594,25 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* ── Received images from assistant ── */
+.receivedMediaList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.receivedImage {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.receivedVideo {
+  max-width: 100%;
+  max-height: 480px;
+  border-radius: 8px;
 }

@@ -1,11 +1,11 @@
 'use client'
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import commonEn from './lang/common.en'
-import commonZh from './lang/common.zh'
+import type { Locale } from '.'
 import appEn from './lang/app.en'
 import appZh from './lang/app.zh'
-import type { Locale } from '.'
+import commonEn from './lang/common.en'
+import commonZh from './lang/common.zh'
 
 const resources = {
   'en': {
@@ -26,8 +26,8 @@ i18n.use(initReactI18next)
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    lng: 'en',
-    fallbackLng: 'en',
+    lng: 'zh-Hans',
+    fallbackLng: 'zh-Hans',
     // debug: true,
     resources,
   })

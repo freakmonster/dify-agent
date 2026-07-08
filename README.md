@@ -1,136 +1,91 @@
-# webapp-text-generator
+# dify-agent
 
-A universal web frontend built on the [Dify](https://dify.ai) API. Wrap any Dify application — text generation, workflow, chat, or Agent — into a deployable Web App with a single click.
+基于 [Dify](https://dify.ai) Chat API 构建的智能对话 Web 客户端，提供清爽的 Glassmorphism 毛玻璃界面。
 
-## Deploy
+## 功能特性
 
-Deploy with EdgeOne Pages.
+- **多轮对话** — 支持上下文连贯的多轮对话，自动管理会话历史
+- **会话侧边栏** — 会话列表管理（新建、重命名、删除），支持展开/收起切换
+- **流式输出** — SSE 实时渲染助手回复，打字机效果
+- **消息复制** — 对话气泡一键复制内容
+- **消息反馈** — 点赞 / 点踩，反馈同步至 Dify 后台
+- **推荐问题** — 自动展示 Dify 应用配置的建议追问问题
+- **Glassmorphism 毛玻璃设计** — 半透明背景、模糊效果、柔和渐变
+- **国际化** — 中英文切换，自动跟随 Dify 应用的 `default_language`
 
-[![EdgeOne Pages deploy](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?template=dify-frontend&from=github&dify=true)
+## 技术栈
 
-## Features
-
-- **Adaptive to four app modes** — Automatically detects the Dify app type; no manual configuration needed
-  - `completion` — Single-turn text generation
-  - `workflow` — Multi-step workflow with node tracing panel
-  - `chat` — Multi-turn conversation with conversation history sidebar
-- **Streaming output** — SSE real-time rendering of assistant replies with typewriter effect
-- **Multimodal file upload** — Supports images, PDF, Word, Excel, CSV, TXT, and Markdown; up to 5 files at once
-- **Voice interaction** — Speech-to-text input (STT) and text-to-speech playback (TTS), following the Dify app toggle
-- **Suggested questions** — Automatically displays Dify-configured follow-up questions after a reply
-- **Message feedback** — Like / dislike, feedback is sent to the Dify backend
-- **Batch run** — Upload CSV for batch processing, export results as CSV
-- **Multiple themes** — Warm / Dark / Cool / Minimal, persisted in localStorage
-- **Internationalization** — Chinese / English switch, auto-set based on the Dify app's `default_language`
-- **Workflow node tracing** — Expandable / collapsible node execution details including duration and token usage
-
-## Tech Stack
-
-| Layer | Technology |
+| 层 | 技术 |
 |---|---|
-| Framework | Next.js 16 (App Router) |
-| UI | React 19 + Tailwind CSS 3 |
-| Language | TypeScript 5 |
-| API Client | dify-client 2 |
-| Markdown Rendering | react-markdown + remark-gfm + KaTeX |
-| Code Editor | Monaco Editor |
-| Internationalization | i18next + react-i18next |
-| Utilities | ahooks · immer · uuid · js-cookie |
+| 框架 | Next.js 16 (App Router) |
+| UI | React 19 + Tailwind CSS 3 + CSS Modules |
+| 语言 | TypeScript 5 |
+| Markdown 渲染 | react-markdown + remark-gfm + KaTeX |
+| 国际化 | i18next + react-i18next |
 
----
+## 快速开始
 
-## Getting Started
-
-### 1. Clone the project
+### 1. 克隆项目
 
 ```bash
-git clone https://github.com/your-org/ai-customer-service.git
-cd ai-customer-service
+git clone https://github.com/freakmonster/dify-agent.git
+cd dify-agent
 npm install
 ```
 
-### 2. Configure environment variables
+### 2. 配置环境变量
 
-Create a `.env` file in the project root and fill in your Dify app information:
+在项目根目录创建 `.env.local` 文件：
 
 ```env
-# Your Dify app API Key (found in Dify Console → App → API Access)
-APP_KEY=app-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+# Dify 应用 API Key（在 Dify 控制台 → 应用 → API 访问 中获取）
+APP_KEY=app-yUtqtMZm2JsGeZzLfNrl7b49
 
-# Dify API URL (change to your instance URL if self-hosted)
+# Dify API 地址（自托管则改为你的实例地址）
 API_URL=https://api.dify.ai/v1
-
-# Optional: force a specific app type; leave blank for auto-detection
-# Valid values: chat | agent | workflow | completion
-NEXT_PUBLIC_APP_TYPE=
 ```
 
-### 3. Start the development server
+### 3. 启动开发服务器
 
 ```bash
 npm run dev
 ```
 
-Visit `http://localhost:3000` to see the result.
+访问 `http://localhost:3000` 查看效果。
 
-### 4. Build for production
+### 4. 构建生产版本
 
 ```bash
 npm run build
 npm run start
 ```
 
----
-
-Setting `NEXT_PUBLIC_APP_TYPE` skips auto-detection and saves one network request — recommended for production.
-
-## Project Structure
+## 项目结构
 
 ```
 app/
-├── api/                       # Next.js Route Handlers (server-side Dify API proxy)
+├── api/                       # Next.js Route Handlers（服务端代理 Dify API）
+│   ├── chat-messages/         # 发送聊天消息（SSE 流式）
+│   ├── conversations/         # 会话管理（列表、删除、重命名）
+│   ├── messages/              # 消息历史、建议问题、反馈
+│   └── parameters/            # 应用参数
 ├── components/
-│   ├── index.tsx              # Root component: app type detection + theme switching
-│   ├── chat-generation/       # Chat / Agent mode main UI
-│   ├── completion/            # Completion / Workflow mode main UI
-│   ├── conversation-sidebar/  # Conversation list sidebar
-│   ├── result/                # Output display (incl. workflow node tracing)
-│   ├── run-once/              # Single run form
-│   ├── run-batch/             # Batch run (CSV)
-│   └── base/                  # Shared UI components
-├── page.tsx                   # Page entry
+│   ├── index.tsx              # 根组件：初始化语言、应用参数
+│   ├── chat-generation/       # 聊天主界面（流式对话、反馈等）
+│   ├── conversation-sidebar/  # 会话列表侧边栏（展开/收起）
+│   └── base/                  # 通用 UI 组件（Loading、Toast）
+├── styles/
+│   └── globals.css            # 全局样式与 Glassmorphism 主题变量
 config/
-└── index.ts                   # Global configuration & environment variable loading
+└── index.ts                   # 全局配置与环境变量读取
 types/
-└── app.ts                     # Global TypeScript type definitions
+└── app.ts                     # TypeScript 类型定义
 service/
-└── index.ts                   # Service layer (wraps all Dify API calls)
+├── index.ts                   # 服务层（封装所有 Dify API 调用）
+└── base.ts                    # 基础请求封装（SSE 流式解析）
 utils/
-└── resolve-app-type.ts        # App type detection logic
-i18n/                          # Internationalization config & language packs
+├── markdown.ts                # Markdown 工具函数
+├── resolve-app-type.ts        # 应用类型检测
+└── index.ts                   # 工具函数入口
+i18n/                          # 国际化配置与语言包
 ```
-
-## Build & Deploy
-
-```bash
-# Production build
-npm run build
-
-# Local preview
-npm start
-```
-
-## Development
-
-```bash
-npm run dev          # Dev server (Turbopack)
-npm run dev:webpack  # Dev server (Webpack)
-npm run lint         # ESLint check
-npm run fix          # ESLint auto-fix
-```
-
-On commit, `lint-staged` automatically runs ESLint fixes on staged `.ts/.tsx` files, managed by Husky Git hooks.
-
-## License
-
-MIT © 2025

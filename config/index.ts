@@ -10,26 +10,11 @@ export const LOCALE_COOKIE_NAME = 'locale'
 
 export const DEFAULT_VALUE_MAX_LEN = 48
 
-/**
- * App type values returned by Dify's /v1/parameters endpoint (inferred) or
- * set explicitly by runtime detection.
- *
- * - completion: single-turn text generation
- * - workflow:   multi-step workflow execution
- * - chat:       multi-turn chat with conversation history
- * - agent:      chat with tool-calling / agent thoughts
- */
-export type AppTypeValue = 'completion' | 'workflow' | 'chat' | 'agent'
-
-/**
- * Legacy boolean for completion mode — derived from NEXT_PUBLIC_APP_TYPE
- * so it stays in sync with the new env-var fast path.
- */
-export const IS_WORKFLOW = process.env.NEXT_PUBLIC_APP_TYPE === 'workflow'
+export type AppTypeValue = 'chat' | 'agent'
 
 /** Fallback app info — actual info is fetched at runtime via /v1/meta */
 export const APP_INFO: AppInfo = {
-  title: 'Text Generator APP',
+  title: 'Chat APP',
   description: '',
   copyright: '',
   privacy_policy: '',

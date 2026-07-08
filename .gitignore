@@ -59,3 +59,10 @@ pnpm-lock.yaml
 
 # Playwright MCP logs
 .playwright-mcp/
+
+# IDE
+.idea/
+.vscode/
+
+# Trae workspace
+.trae/
