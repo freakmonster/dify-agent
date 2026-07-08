@@ -38,10 +38,8 @@ npm install
 在项目根目录创建 `.env.local` 文件：
 
 ```env
-# Dify 应用 API Key（在 Dify 控制台 → 应用 → API 访问 中获取）
 APP_KEY=app-yUtqtMZm2JsGeZzLfNrl7b49
 
-# Dify API 地址（自托管则改为你的实例地址）
 API_URL=https://api.dify.ai/v1
 ```
 
