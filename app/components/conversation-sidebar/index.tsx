@@ -1,22 +1,23 @@
 'use client'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import cn from 'classnames'
-import { useTranslation } from 'react-i18next'
-import {
-  PlusIcon,
-  TrashIcon,
-  PencilIcon,
-  CheckIcon,
-  XMarkIcon,
-  ChatBubbleLeftRightIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from '@heroicons/react/24/outline'
 import Loading from '@/app/components/base/loading'
 import Toast from '@/app/components/base/toast'
-import { fetchConversations, deleteConversation, renameConversation } from '@/service'
-import type { Conversation } from '@/types/app'
 import type { AppTypeValue } from '@/config'
+import { deleteConversation, fetchConversations, renameConversation } from '@/service'
+import type { Conversation } from '@/types/app'
+import {
+  ChatBubbleLeftRightIcon,
+  CheckIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  PencilIcon,
+  PlusIcon,
+  QuestionMarkCircleIcon,
+  TrashIcon,
+  XMarkIcon
+} from '@heroicons/react/24/outline'
+import cn from 'classnames'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import s from './sidebar-styles.module.css'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -53,6 +54,9 @@ const ConversationSidebar: React.FC<Props> = ({
   const [renamingId, setRenamingId] = useState<string | null>(null)
   const [renameValue, setRenameValue] = useState('')
   const renameInputRef = useRef<HTMLInputElement>(null)
+
+  // Tip modal state
+  const [showTip, setShowTip] = useState(false)
 
   // ── Load conversations ─────────────────────────────────────────────────────
   const loadConversations = useCallback(async () => {
@@ -170,6 +174,15 @@ const ConversationSidebar: React.FC<Props> = ({
               : <ChevronLeftIcon className="w-4 h-4" />}
           </button>
         )}
+        {/* Tip button */}
+        <button
+          className={s.tipButton}
+          onClick={() => setShowTip(true)}
+          title={t('app.sidebar.getTip') as string}
+        >
+          <QuestionMarkCircleIcon className="w-4 h-4" />
+          <span className={s.tipButtonText}>{t('app.sidebar.getTip')}</span>
+        </button>
       </div>
 
       {/* List */}
@@ -259,6 +272,32 @@ const ConversationSidebar: React.FC<Props> = ({
           </div>
         ))}
       </div>
+
+      {/* Tip modal */}
+      {showTip && (
+        <div className={s.modalOverlay} onClick={() => setShowTip(false)}>
+          <div className={s.modal} onClick={e => e.stopPropagation()}>
+            <button
+              className={s.modalCloseBtn}
+              onClick={() => setShowTip(false)}
+              title="关闭"
+            >
+              <XMarkIcon className="w-4 h-4" />
+            </button>
+            <div className={s.modalTitle}>不知道问什么时，您可以询问：</div>
+            <div className={s.modalBody}>
+              一般性的生活问题{'\n'}
+              今天xx城市的天气{'\n'}
+              从地点A到地点B的路线{'\n'}
+              今日有关xx的新闻{'\n'}
+              生成图片：xx{'\n'}
+              生成视频：xx{'\n'}
+              xx菜品怎么做
+            </div>
+            <div className={s.modalNote}>如遇网络问题请刷新页面</div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
