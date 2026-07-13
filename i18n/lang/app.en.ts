@@ -115,6 +115,7 @@ const translation = {
     cancelTitle: 'Cancel',
     renameTitle: 'Rename',
     deleteTitle: 'Delete',
+    getTip: 'Get Tips',
   },
 }
 
