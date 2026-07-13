@@ -74,7 +74,7 @@ const translation = {
   },
   chat: {
     emptyTitle: '开始对话',
-    emptyDesc: 'AI助手可以查询天气、路线规划、生成图片或视频、新闻追踪等功能。',
+    emptyDesc: 'AI助手可以查询天气、路线规划、生成图片或视频、新闻追踪等功能。不清楚询问什么时可以点击侧边栏的“获取”提示按钮。',
     suggestions: '推荐问题',
     suggestionsNotEnabled: '您的 Dify 应用未启用推荐问题功能。',
     suggestionsCheckFailed: '无法验证推荐问题设置。',
@@ -112,6 +112,7 @@ const translation = {
     cancelTitle: '取消',
     renameTitle: '重命名',
     deleteTitle: '删除',
+    getTip: '获取提示',
   },
 }
 
