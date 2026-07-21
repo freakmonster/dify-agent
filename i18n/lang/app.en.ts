@@ -86,6 +86,7 @@ const translation = {
     inputPlaceholder: 'Enter Message…',
     inputHint: 'Enter to send · Shift+Enter for new line',
     thinkingLabel: 'Thinking',
+    streamingLabel: 'Thinking',
     stopBtn: 'Stop',
     attachTitle: 'Attach file',
     removeFileTitle: 'Remove file',

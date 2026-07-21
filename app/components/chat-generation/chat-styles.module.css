@@ -146,18 +146,34 @@
   border-radius: 2px 12px 12px 12px;
 }
 
-/* streaming cursor */
-.cursor::after {
-  content: '\25AE';
-  display: inline-block;
-  animation: blink 0.8s step-end infinite;
-  margin-left: 1px;
+/* streaming indicator — "正在思考" + sequential blinking dots */
+.thinkingIndicator {
+  display: inline;
   color: var(--color-primary);
   font-size: 12px;
+  margin-left: 2px;
 }
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+
+.thinkingDot {
+  opacity: 0;
+  animation: dotBlink 1.4s infinite both;
+}
+
+.thinkingDot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.thinkingDot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.thinkingDot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotBlink {
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
 }
 
 /* Streaming shimmer effect on glass theme */

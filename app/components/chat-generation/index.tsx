@@ -130,7 +130,7 @@ const ChatGeneration: React.FC<Props> = ({
               isStreaming: false,
               feedback: m.feedback,
               agent_thoughts: m.agent_thoughts || [],
-              receivedFiles: m.files || undefined,
+              receivedFiles: m.message_files || m.files || undefined,
               created_at: m.created_at,
             }
 
@@ -463,9 +463,20 @@ const ChatGeneration: React.FC<Props> = ({
                 {msg.role === MessageRole.Assistant
                   ? (
                     <>
-                      <ReactMarkdown className="prose prose-sm max-w-none break-words">
-                        {msg.content || (msg.isStreaming ? ' ' : '')}
-                      </ReactMarkdown>
+                      {/* answer 文本 — 当消息包含图片文件时隐藏，只渲染媒体 */}
+                      {!msg.receivedFiles?.some(f => f.type === 'image') && (
+                        <ReactMarkdown className="prose prose-sm max-w-none break-words">
+                          {msg.content || (msg.isStreaming ? ' ' : '')}
+                        </ReactMarkdown>
+                      )}
+                      {msg.isStreaming && (
+                        <span className={s.thinkingIndicator}>
+                          {t('app.chat.streamingLabel')}
+                          <span className={s.thinkingDot}>.</span>
+                          <span className={s.thinkingDot}>.</span>
+                          <span className={s.thinkingDot}>.</span>
+                        </span>
+                      )}
                       {msg.receivedFiles && msg.receivedFiles.length > 0 && (
                         <div className={s.receivedMediaList}>
                           {msg.receivedFiles
@@ -507,17 +518,19 @@ const ChatGeneration: React.FC<Props> = ({
               {/* Feedback (like / dislike) — only for completed assistant messages with a real Dify ID */}
               {msg.role === MessageRole.Assistant && !msg.isStreaming && msg.content && !msg.id.startsWith('assistant-') && (
                 <div className={s.messageActions}>
-                  <button
-                    className={s.feedbackBtn}
-                    onClick={() => {
-                      navigator.clipboard.writeText(msg.content)
-                        .then(() => Toast.notify({ type: 'success', message: 'Copied to clipboard' }))
-                        .catch(() => Toast.notify({ type: 'error', message: 'Failed to copy' }))
-                    }}
-                    title="Copy"
-                  >
-                    <span className="text-xs">复制</span>
-                  </button>
+                  {!msg.receivedFiles?.some(f => f.type === 'image') && (
+                    <button
+                      className={s.feedbackBtn}
+                      onClick={() => {
+                        navigator.clipboard.writeText(msg.content)
+                          .then(() => Toast.notify({ type: 'success', message: 'Copied to clipboard' }))
+                          .catch(() => Toast.notify({ type: 'error', message: 'Failed to copy' }))
+                      }}
+                      title="Copy"
+                    >
+                      <span className="text-xs">复制</span>
+                    </button>
+                  )}
                   <button
                     className={cn(s.feedbackBtn, msg.feedback?.rating === 'like' && s.feedbackBtnActive)}
                     onClick={() => handleFeedback(msg.id, msg.feedback?.rating ?? null, 'like')}
