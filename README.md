@@ -85,5 +85,5 @@ utils/
 ├── markdown.ts                # Markdown 工具函数
 ├── resolve-app-type.ts        # 应用类型检测
 └── index.ts                   # 工具函数入口
-i18n/                          # 国际化配置与语言包
+locales/                       # 语言包
 ```
