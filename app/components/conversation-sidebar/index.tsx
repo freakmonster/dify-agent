@@ -286,13 +286,13 @@ const ConversationSidebar: React.FC<Props> = ({
             </button>
             <div className={s.modalTitle}>不知道问什么时，您可以询问：</div>
             <div className={s.modalBody}>
-              一般性的生活问题{'\n'}
-              今天xx城市的天气{'\n'}
-              从地点A到地点B的路线{'\n'}
-              今日有关xx的新闻{'\n'}
-              生成图片：xx{'\n'}
-              生成视频：xx{'\n'}
-              xx菜品怎么做
+              一般性的生活问题：什么是深度学习{'\n'}
+              天气查询：今天xx城市的天气{'\n'}
+              路线规划：从地点A到地点B的路线{'\n'}
+              新闻追踪：今日有关xx的新闻、行业动态{'\n'}
+              生成图片/视频：帮我生成xx的图片或视频{'\n'}
+              网页文章解析：帮我获取（输入url）里的文章内容{'\n'}
+              菜谱查询：xx菜品怎么做、推荐今天可以吃什么
             </div>
             <div className={s.modalNote}>如遇网络问题请刷新页面</div>
           </div>

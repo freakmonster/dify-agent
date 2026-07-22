@@ -26,6 +26,7 @@ import cn from 'classnames'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import s from './chat-styles.module.css'
 
 // ─── Types ────────────────────────────────────────────────────────────
@@ -465,7 +466,10 @@ const ChatGeneration: React.FC<Props> = ({
                     <>
                       {/* answer 文本 — 当消息包含图片文件时隐藏，只渲染媒体 */}
                       {!msg.receivedFiles?.some(f => f.type === 'image') && (
-                        <ReactMarkdown className="prose prose-sm max-w-none break-words">
+                        <ReactMarkdown
+                          className="prose prose-sm max-w-none break-words"
+                          remarkPlugins={[remarkGfm]}
+                        >
                           {msg.content || (msg.isStreaming ? ' ' : '')}
                         </ReactMarkdown>
                       )}
