@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 import type { Locale } from '.'
 import { i18n } from '.'
 import { LOCALE_COOKIE_NAME } from '@/config'
-import { changeLanguage } from '@/i18n/i18next-config'
+import { changeLanguage } from '@/locales/i18next-config'
 
 
 // same logic as server

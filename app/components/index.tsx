@@ -1,7 +1,7 @@
 'use client'
 import Loading from '@/app/components/base/loading'
 import type { AppTypeValue } from '@/config'
-import { setLocaleOnClient } from '@/i18n/client'
+import { setLocaleOnClient } from '@/locales/client'
 import { fetchAppParams } from '@/service'
 import { difyLocaleToAppLocale } from '@/utils/resolve-app-type'
 import React, { useCallback, useEffect, useState } from 'react'

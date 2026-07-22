@@ -1,5 +1,5 @@
-import type { Locale } from '@/i18n'
-import { i18n as i18nConfig } from '@/i18n'
+import type { Locale } from '@/locales'
+import { i18n as i18nConfig } from '@/locales'
 
 
 /**
